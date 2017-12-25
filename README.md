@@ -119,24 +119,24 @@ Rendering minicart. Useful to call after AJAX asynchronus add to cart button - f
 
 <script type="text/javascript">
 $(function() {
-    $(document).on('click', '.js--add-to-cart', function(ev) {
-        var item = [{
-            id: $(this).data('productId'),
-            quantity: 1,
-            seller: '1'
-        }];
+  $(document).on('click', '.js--add-to-cart', function(ev) {
+    var item = [{
+      id: $(this).data('productId'),
+      quantity: 1,
+      seller: '1'
+    }];
 
-        vtexjs.checkout.addToCart(item, null, 1)
-            .done(function(orderForm) {
-                // Actualize minicart
-                $('#myMinicart').vtexMinicart('fillCart');
-                // Open minicart
-                $('#myMinicart').addClass('is--active');
-            })
-            .fail(function(err) {
-                window.console.log(err)
-            });
-    });
+    vtexjs.checkout.addToCart(item, null, 1)
+      .done(function(orderForm) {
+        // Actualize minicart
+        $('#myMinicart').vtexMinicart('fillCart');
+        // Open minicart
+        $('#myMinicart').addClass('is--active');
+      })
+      .fail(function(err) {
+        window.console.log(err)
+      });
+  });
 });
 </script>
 ```
@@ -151,11 +151,11 @@ Triggered when item are updated.
 
 ```js
 $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
-    window.console.group('Cart Updated');
-    window.console.log(orderForm); // Actual orderForm {object}
-    window.console.log(itemIndex); // Item index changed {int}
-    window.console.log(item);      // Item changed {object}
-    window.console.groupEnd();
+  window.console.group('Cart Updated');
+  window.console.log(orderForm); // Actual orderForm {object}
+  window.console.log(itemIndex); // Item index changed {int}
+  window.console.log(item);      // Item changed {object}
+  window.console.groupEnd();
 });
 ```
 
@@ -165,9 +165,9 @@ Triggered when item are deleted. Useful to do actions when minicart are cleared.
 
 ```js
 $(document).on('vtexMinicart.delete', function(ev, orderForm) {
-    if ( orderForm.items.length < 1 ) {
-        $('#myMinicart').removeClass('is--active');
-    }
+  if ( orderForm.items.length < 1 ) {
+    $('#myMinicart').removeClass('is--active');
+  }
 });
 ```
 
@@ -177,7 +177,7 @@ Triggered whenever VtexMinicart.js begins to process the request queue.
 
 ```js
 $(document).on('vtexMinicart.requestStart', function(ev) {
-    // Event handling here
+  // Event handling here
 });
 ```
 
@@ -187,13 +187,122 @@ Triggered whenever VtexMinicart.js completes processing the current request queu
 
 ```js
 $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
-    // Event handling here
+  // Event handling here
 });
 ```
 
 ## DOM Binding
 
 Docs incoming. Optionaly, check the `/example/` folder.
+
+### Cart container
+
+Init markup
+
+```html
+<div id="myMinicart" class="minicart">
+  <!-- Your cart properties goes here -->
+</div>
+
+<script type="text/javascript">
+$(function() {
+  $('#myMinicart').vtexMinicart();
+});
+</script>
+```
+
+### Cart conditional
+
+With Rivets.js, you can show content based on item on cart with directive `rv-show` with condotional filter `gt` (greater than) or `lt` (less than).
+
+```html
+<!-- This element will show only if have items on cart -->
+<div class="minicart__middle" rv-show="cart.itemCount | gt 0">
+  <!-- Cart content -->
+</div>
+
+<!-- If there's no item on cart, this element will be show -->
+<div class="minicart__empty" rv-show="cart.itemCount | lt 1">
+  <p class="minicart__empty-text">Você não possui produtos no seu carrinho</p>
+</div>
+```
+
+### Cart loop
+
+Renders your items on a cart with `rv-each-{varName}`.
+
+```html
+<!-- While have items on 'cart.items' object, this loop will be rendering -->
+<li class="minicart__item-container" rv-each-item="cart.items"></li>
+```
+
+### Cart properties
+
+`{varName}` is your object with all cart properties. With example above, each cart item is on `item` object.
+
+You can check all properties setting up **debug option** to `true`.
+
+```html
+<div class="minicart__item-name">
+  <h4 class="minicart__item-title" rv-text="item.productInfo.name"></h4>
+</div>
+```
+
+### Cart filters
+
+There are two Vtex Custom Filters you can use to format prices and images:
+
+- productImgSize: following by `width` and `height` values
+- formatPrice: formats int value price provided by Vtex API
+
+```html
+<div class="minicart__item-img-wrapper">
+  <!-- Rendering product image with 110x100 size -->
+  <img class="minicart__item-img" rv-src="item.imageUrl | productImgSize 110 110" rv-alt="item.name" rv-title="item.name"/>
+</div>
+
+<div class="minicart__item-price-wrapper">
+  <!-- Only shows old price if exists -->
+  <del class="minicart__item-old-price" rv-if="item.listPrice | gt 0" rv-text="item.listPrice | formatPrice"></del>
+  <!-- Best price -->
+  <p class="minicart__item-best-price" rv-text="item.sellingPrice | formatPrice"></p>
+</div>
+```
+
+### Cart tips markup
+
+**Show product selected variants**
+```html
+<p class="minicart__item-variant" rv-if="item.variants | isNotEmpty">
+  <span rv-text="item.variants.Cor"></span> | <span rv-text="item.variants.Tamanho"></span>
+</p>
+```
+
+**Show installments**
+```html
+<div class="minicart__item-installments-wrapper" rv-if="item.installments | gt 1">
+  ou <span rv-text="item.installments"></span>X de <span rv-text="item.installmentsValue | formatPrice"></span>
+</div>
+```
+
+**Set item quantity**
+```html
+<div class="minicart__item-qty-wrapper">
+  <a href="#" class="minicart__item-qty-btn has--minus" data-minicart-item-qty="-">-</a>
+  <input type="text"
+      class="minicart__item-qty-val"
+      readonly="readonly"
+      data-minicart-item-qty-val=""
+      rv-value="item.quantity"
+      rv-data-minicart-availablequantity="item.availablequantity"
+      rv-data-minicart-index="item.index"/>
+  <a href="#" class="minicart__item-qty-btn has--plus" data-minicart-item-qty="+">+</a>
+</div>
+```
+
+See complete example markup on `/example/` dir.
+
+For advanced [Rivets.js](http://rivetsjs.com) use, check full documentation [here](http://rivetsjs.com/docs/guide/)
 
 ## License
 VtexMinicart.js is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
@@ -203,7 +312,3 @@ VtexMinicart.js is open-sourced software licensed under the [MIT license](https:
 jQuery 1.8.3+
 
 Rivets.js 0.9.6+
-
-## Todo
-
-- DOM Binding docs

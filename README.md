@@ -143,7 +143,7 @@ $(function() {
 
 ## Events
 
-Events are triggered on the document and prefixed with the cart namespace.
+Events are triggered on the document and prefixed with the vtexMinicart namespace.
 
 ### vtexMinicart.update [orderForm, itemIndex, item]
 
@@ -190,6 +190,10 @@ $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
     // Event handling here
 });
 ```
+
+## DOM Binding
+
+Docs incoming. Optionaly, check the `/example/` folder.
 
 ## License
 VtexMinicart.js is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

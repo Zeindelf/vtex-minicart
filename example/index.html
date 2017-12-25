@@ -77,7 +77,7 @@
                                             <a href="#" class="minicart__item-qty-btn has--plus" data-minicart-item-qty="+">+</a>
                                         </div>
 
-                                        <button class="minicart__item-remove" role="remove" data-minicart-item-remove="" rv-data-minicart-index="item.index">X</button>
+                                        <button class="minicart__item-remove" role="remove" data-minicart-item-remove="" rv-data-minicart-index="item.index">×</button>
                                     </div>
                                 </div>
                             </li>
@@ -117,7 +117,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
         <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
         <script>
-            $(function() {
+            (function($) {
                 var El = {
                     minicart: {
                         self: $('.js--minicart'),
@@ -127,63 +127,86 @@
                     overlay: $('.js--overlay'),
                 };
 
-                // Init plugin
-                El.minicart.self.vtexMinicart({
-                    debug: true,
-                    bodyClass: 'has--loader', // Default value
-                });
+                var App = {
+                    init: function() {
+                        App.initPlugin();
+                        App.actions();
+                        App.events();
+                    },
 
-                // Actions
-                El.minicart.open.on('click', function(ev) {
-                    El.minicart.self
-                        .add(El.overlay)
-                        .addClass('is--active');
-                });
+                    initPlugin: function() {
+                        // Init plugin
+                        El.minicart.self.vtexMinicart({
+                            debug: true,
+                            bodyClass: 'has--loader',
+                        });
+                    },
 
-                El.minicart.close.on('click', function(ev) {
-                    El.minicart.self
-                        .add(El.overlay)
-                        .removeClass('is--active');
-                });
+                    actions: function() {
+                        El.minicart.open.on('click', function(ev) {
+                            App._openCart();
+                        });
 
-                El.overlay.on('click', function(ev) {
-                    El.overlay
-                        .add(El.minicart.self)
-                        .removeClass('is--active');
-                });
+                        El.minicart.close.on('click', function(ev) {
+                            App._closeCart();
+                        });
 
-                // Evento quando um item é atualizado no carrinho
-                $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
-                    window.console.group('Cart Updated');
-                    window.console.log(orderForm);
-                    window.console.log(itemIndex);
-                    window.console.log(item);
-                    window.console.groupEnd();
-                });
+                        El.overlay.on('click', function(ev) {
+                            App._closeByOverlay();
+                        });
+                    },
 
-                // Evento quando um item é retirado do carrinho
-                $(document).on('vtexMinicart.delete', function(ev, orderForm) {
-                    window.console.group('Cart Delete');
-                    window.console.groupEnd();
+                    events: function() {
+                        $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
+                            window.console.group('Cart Updated');
+                            window.console.log(orderForm);
+                            window.console.log(itemIndex);
+                            window.console.log(item);
+                            window.console.groupEnd();
+                        });
 
-                    if ( orderForm.items.length ) {
+                        $(document).on('vtexMinicart.delete', function(ev, orderForm) {
+                            window.console.group('Cart Delete');
+                            window.console.groupEnd();
+
+                            if ( orderForm.items.length ) {
+                                App._closeCart();
+                            }
+                        });
+
+                        $(document).on('vtexMinicart.requestStart', function(ev) {
+                            window.console.group('Request Start');
+                            window.console.groupEnd();
+                        });
+
+                        $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
+                            window.console.group('Request End');
+                            window.console.log(orderForm);
+                            window.console.groupEnd();
+                        });
+                    },
+
+                    _openCart: function() {
+                        El.minicart.self
+                            .add(El.overlay)
+                            .addClass('is--active');
+                    },
+
+                    _closeCart: function() {
                         El.minicart.self
                             .add(El.overlay)
                             .removeClass('is--active');
-                    }
-                });
+                    },
 
-                $(document).on('vtexMinicart.requestStart', function(ev) {
-                    window.console.group('Request Start');
-                    window.console.groupEnd();
-                });
+                    _closeByOverlay: function() {
+                        El.overlay
+                            .add(El.minicart.self)
+                            .removeClass('is--active');
+                    },
+                };
 
-                $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
-                    window.console.group('Request End');
-                    window.console.log(orderForm);
-                    window.console.groupEnd();
-                });
-            });
+                document.addEventListener('DOMContentLoaded', App.init);
+            })(jQuery);
         </script>
     </body>
 </html>

@@ -1,7 +1,3 @@
-// VtexMinicart.js
-// version: 0.0.1
-// author: Wellington Barreto
-// license: MIT
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -292,30 +288,39 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 rivets.formatters['!'] = function (value) {
   return !value;
 };
+
 rivets.formatters.eq = function (value, args) {
   return value === args;
 };
+
 rivets.formatters.neq = function (value, args) {
   return value !== args;
 };
+
 rivets.formatters.gt = function (value, args) {
   return value > args;
 };
+
 rivets.formatters.gte = function (value, args) {
   return value >= args;
 };
+
 rivets.formatters.lt = function (value, args) {
   return value < args;
 };
+
 rivets.formatters.lte = function (value, args) {
   return value <= args;
 };
+
 rivets.formatters.or = function (value, args) {
   return value || args;
 };
+
 rivets.formatters.isEmpty = function (value) {
   return typeof value === 'undefined' || value === null || typeof value === 'string' && value.length === 0;
 };
+
 rivets.formatters.isNotEmpty = function (value) {
   return !rivets.formatters.isEmpty(value);
 };

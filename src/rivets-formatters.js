@@ -5,38 +5,47 @@ rivets.formatters['!'] = function(value)
 {
   return !value;
 };
+
 rivets.formatters.eq = function(value, args)
 {
   return value === args;
 };
+
 rivets.formatters.neq = function(value, args)
 {
   return value !== args;
 };
+
 rivets.formatters.gt = function(value, args)
 {
   return value > args;
 };
+
 rivets.formatters.gte = function(value, args)
 {
   return value >= args;
 };
+
 rivets.formatters.lt = function(value, args)
 {
   return value < args;
 };
+
 rivets.formatters.lte = function(value, args)
 {
   return value <= args;
 };
+
 rivets.formatters.or = function(value, args)
 {
   return value || args;
 };
+
 rivets.formatters.isEmpty = function(value)
 {
   return (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.length === 0));
 };
+
 rivets.formatters.isNotEmpty = function(value)
 {
   return !rivets.formatters.isEmpty(value);

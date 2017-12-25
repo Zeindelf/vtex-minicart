@@ -206,4 +206,4 @@ Rivets.js 0.9.6+
 
 ## Todo
 
-- Error handling
+- DOM Binding docs

@@ -1,3 +1,7 @@
+// VtexMinicart.js
+// version: 0.0.2
+// author: Wellington Barreto
+// license: MIT
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -143,10 +147,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
                 var oldVal = itemQtyVal.val();
                 var newVal = 0;
 
+                availableQty = availableQty ? availableQty : 99999;
+
                 if ($this.data('minicartItemQty') === '+') {
                     newVal = parseFloat(oldVal) + 1;
 
-                    if (newVal > availableQty) {
+                    if (newVal > parseInt(availableQty)) {
                         return false;
                     }
                 } else {
@@ -254,6 +260,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
         var arg = arguments;
         var options = (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option;
+
+        if (!(typeof option.debug === 'boolean')) {
+            throw new Error('Option debug should be a "boolean" value');
+        }
+
+        if (!(typeof option.bodyClass === 'string')) {
+            throw new Error('Option bodyClass should be a "string" value.');
+        }
 
         return this.each(function (ev) {
             var $this = $(_this6);

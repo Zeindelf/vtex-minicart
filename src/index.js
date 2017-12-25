@@ -90,14 +90,16 @@ import './rivets-formatters.js';
                 const $this = $(ev.currentTarget);
                 const itemQtyVal = $this.parent().find('[data-minicart-item-qty-val]');
                 const index = itemQtyVal.data('minicartIndex');
-                const availableQty = itemQtyVal.data('minicartAvailablequantity');
+                let availableQty = itemQtyVal.data('minicartAvailablequantity');
                 let oldVal = itemQtyVal.val();
                 let newVal = 0;
+
+                availableQty = ( availableQty ) ? availableQty : 99999;
 
                 if ( $this.data('minicartItemQty') === '+' ) {
                     newVal = parseFloat(oldVal) + 1;
 
-                    if ( newVal > availableQty ) {
+                    if ( newVal > parseInt(availableQty) ) {
                         return false;
                     }
                 } else {
@@ -203,6 +205,13 @@ import './rivets-formatters.js';
         let arg = arguments;
         let options = typeof option === 'object' && option;
 
+        if ( ! (typeof option.debug === 'boolean') ) {
+            throw new Error('Option debug should be a "boolean" value');
+        }
+
+        if ( ! (typeof option.bodyClass === 'string') ) {
+            throw new Error('Option bodyClass should be a "string" value.');
+        }
 
         return this.each((ev) => {
             const $this = $(this);

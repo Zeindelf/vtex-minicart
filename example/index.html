@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:vtex="http://www.vtex.com.br/2009/vtex-common" xmlns:vtex.cmc="http://www.vtex.com.br/2009/vtex-commerce">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="minimal-ui, width=device-width,initial-scale=1"/>
+        <title>Vtex Minicart Example</title>
+        <link rel="stylesheet" href="/arquivos/vtex-minicart.min.css" media="all" />
+
+        <!-- Theme Scripts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelector('body').classList.remove('has--loader');
+            });
+        </script>
+    </head>
+    <body>
+        <!-- Main Content -->
+        <main role="main" class="main">
+            <header class="header">
+                <div class="header__minicart">
+                    <button class="minicart__open js--minicart-open" role="open">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-minicart" viewBox="0 0 1000 1000"><path d="M934 364.81c-12.31-13.84-29.22-23.07-47.68-23.07h-58.48l-1.54-1.54L611 75.64c-10.77-13.84-29.22-16.92-43.07-6.15s-16.93 29.22-6.19 43.06c0 1.54 1.54 1.54 1.54 3.08l184.57 227.64H240.27l184.58-227.64c10.77-12.31 10.77-32.3-3.08-43.07-12.31-10.77-32.3-10.77-43.07 3.08a5.37 5.37 0 0 0-1.54 3.08L161.83 340.2v1.54h-47.69a61.71 61.71 0 0 0-61.53 61.53c0 3.08 0 7.69 1.54 10.77L132.6 812.4A153.32 153.32 0 0 0 283.34 937h432.21a153.32 153.32 0 0 0 150.74-124.6l80-396.84c3.06-18.45-.02-36.91-12.29-50.75zM807.84 801.63c-9.23 43.07-46.14 73.83-90.75 73.83H283.34c-44.61 0-81.52-30.76-90.75-73.83l-78.45-398.37h772.14z"></path><path d="M500.21 752.41A30.85 30.85 0 0 0 531 721.65V564.76a30.76 30.76 0 1 0-61.53 0v156.89a30.85 30.85 0 0 0 30.74 30.76zM654 752.41a30.85 30.85 0 0 0 30.76-30.76V564.76a30.76 30.76 0 1 0-61.53 0v156.89A30.85 30.85 0 0 0 654 752.41zM346.4 752.41a30.85 30.85 0 0 0 30.76-30.76V564.76a30.76 30.76 0 1 0-61.53 0v156.89a30.85 30.85 0 0 0 30.77 30.76z"></path></svg>
+                        <span class="minicart__amount" data-minicart-amount="0"></span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="minicart js--minicart">
+                <div class="minicart__top">
+                    <div class="minicart__header">
+                        <p class="minicart__title">Minha Sacola</p>
+                        <button class="minicart__close js--minicart-close" role="close">×</button>
+                    </div>
+                </div>
+
+                <div class="minicart__middle" rv-show="cart.itemCount | gt 0">
+                    <div class="minicart__content">
+                        <ul class="minicart__items">
+                            <li class="minicart__item-container" rv-each-item="cart.items">
+                                <div class="minicart__item">
+                                    <div class="minicart__item-img-wrapper">
+                                        <img class="minicart__item-img" rv-src="item.imageUrl | productImgSize 110 110" rv-alt="item.name" rv-title="item.name"/>
+                                    </div>
+
+                                    <div class="minicart__item-info">
+                                        <div class="minicart__item-name">
+                                            <input type="hidden" name="product_id" rv-value="item.productId"/>
+                                            <input type="hidden" name="product_sku" rv-value="item.id"/>
+                                            <h4 class="minicart__item-title" rv-text="item.productInfo.name"></h4>
+                                            <small class="minicart__item-sku-title" rv-text="item.name"></small>
+                                            <p class="minicart__item-variant" rv-if="item.variants | isNotEmpty">
+                                                <span rv-text="item.variants.Cor"></span> | <span rv-text="item.variants.Tamanho"></span>
+                                            </p>
+                                        </div>
+
+                                        <div class="minicart__item-price-wrapper">
+                                            <del class="minicart__item-old-price" rv-if="item.listPrice | gt 0" rv-text="item.listPrice | formatPrice"></del>
+                                            <p class="minicart__item-best-price" rv-text="item.sellingPrice | formatPrice"></p>
+                                        </div>
+
+                                        <div class="minicart__item-installments-wrapper" rv-if="item.installments | gt 1">
+                                            ou <span rv-text="item.installments"></span>X de <span rv-text="item.installmentsValue | formatPrice"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="minicart__item-actions">
+                                        <div class="minicart__item-qty-wrapper">
+                                            <a href="#" class="minicart__item-qty-btn has--minus" data-minicart-item-qty="-">-</a>
+                                            <input type="text"
+                                                class="minicart__item-qty-val"
+                                                readonly="readonly"
+                                                data-minicart-item-qty-val=""
+                                                rv-value="item.quantity"
+                                                rv-data-minicart-availablequantity="item.availablequantity"
+                                                rv-data-minicart-index="item.index"/>
+                                            <a href="#" class="minicart__item-qty-btn has--plus" data-minicart-item-qty="+">+</a>
+                                        </div>
+
+                                        <button class="minicart__item-remove" role="remove" data-minicart-item-remove="" rv-data-minicart-index="item.index">X</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="minicart__bottom" rv-show="cart.itemCount | gt 0">
+                    <div class="minicart__footer">
+                        <div class="minicart__total-price">
+                            <div class="minicart__subtotal">
+                                <p class="minicart__subtotal-text">Subtotal</p>
+                                <p class="minicart__subtotal-price" data-minicart-subtotal="">R$ 0,00</p>
+                            </div>
+                        </div>
+
+                        <div class="minicart__actions">
+                            <a class="minicart__btn-keeping-buying js--minicart-close" href="#">Continuar Comprando</a>
+                            <a class="minicart__btn-checkout js--minicart-checkout" href="/checkout">Finalizar Compra</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="minicart__empty" rv-show="cart.itemCount | lt 1">
+                    <p class="minicart__empty-text">Você não possui produtos no seu carrinho</p>
+                </div>
+            </div>
+        </main>
+        <!-- ./Main Content -->
+
+        <div class="overlay js--overlay"></div>
+        <div class="ajax-loader__container">
+            <svg class="ajax-loader" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <path fill="#425264" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"><animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></path></svg>
+        </div>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+        <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
+        <script>
+            $(function() {
+                var El = {
+                    minicart: {
+                        self: $('.js--minicart'),
+                        open: $('.js--minicart-open'),
+                        close: $('.js--minicart-close'),
+                    },
+                    overlay: $('.js--overlay'),
+                };
+
+                // Init plugin
+                El.minicart.self.vtexMinicart({
+                    debug: true,
+                    bodyClass: 'has--loader', // Default value
+                });
+
+                // Actions
+                El.minicart.open.on('click', function(ev) {
+                    El.minicart.self
+                        .add(El.overlay)
+                        .addClass('is--active');
+                });
+
+                El.minicart.close.on('click', function(ev) {
+                    El.minicart.self
+                        .add(El.overlay)
+                        .removeClass('is--active');
+                });
+
+                El.overlay.on('click', function(ev) {
+                    El.overlay
+                        .add(El.minicart.self)
+                        .removeClass('is--active');
+                });
+
+                // Evento quando um item é atualizado no carrinho
+                $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
+                    window.console.group('Cart Updated');
+                    window.console.log(orderForm);
+                    window.console.log(itemIndex);
+                    window.console.log(item);
+                    window.console.groupEnd();
+                });
+
+                // Evento quando um item é retirado do carrinho
+                $(document).on('vtexMinicart.delete', function(ev, orderForm) {
+                    window.console.group('Cart Delete');
+                    window.console.groupEnd();
+
+                    if ( orderForm.items.length ) {
+                        El.minicart.self
+                            .add(El.overlay)
+                            .removeClass('is--active');
+                    }
+                });
+
+                $(document).on('vtexMinicart.requestStart', function(ev) {
+                    window.console.group('Request Start');
+                    window.console.groupEnd();
+                });
+
+                $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
+                    window.console.group('Request End');
+                    window.console.log(orderForm);
+                    window.console.groupEnd();
+                });
+            });
+        </script>
+    </body>
+</html>

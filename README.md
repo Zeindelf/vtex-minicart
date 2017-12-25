@@ -193,8 +193,6 @@ $(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
 
 ## DOM Binding
 
-Docs incoming. Optionaly, check the `/example/` folder.
-
 ### Cart container
 
 Init markup
@@ -206,14 +204,17 @@ Init markup
 
 <script type="text/javascript">
 $(function() {
-  $('#myMinicart').vtexMinicart();
+  $('#myMinicart').vtexMinicart({
+    debug: true,
+    bodyClass: 'has--loader',
+  });
 });
 </script>
 ```
 
 ### Cart conditional
 
-With Rivets.js, you can show content based on item on cart with directive `rv-show` with condotional filter `gt` (greater than) or `lt` (less than).
+With Rivets.js, you can show content based on item on cart with directive `rv-show` with conditional filter `gt` (greater than) or `lt` (less than).
 
 ```html
 <!-- This element will show only if have items on cart -->
@@ -287,6 +288,7 @@ There are two Vtex Custom Filters you can use to format prices and images:
 
 **Set item quantity**
 ```html
+<!-- Uses this markup to properly functionality -->
 <div class="minicart__item-qty-wrapper">
   <a href="#" class="minicart__item-qty-btn has--minus" data-minicart-item-qty="-">-</a>
   <input type="text"

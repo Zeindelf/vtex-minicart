@@ -10,10 +10,6 @@ dist/
 └── vtex-minicart.rivets.min.js   (compressed with Rivets.js)
 ```
 
-## Example
-
-Useful example can be found on `/example/` dir.
-
 ## Getting started
 
 ### Install
@@ -25,11 +21,11 @@ npm install vtex-minicart --save
 Include files:
 
 ```html
-<!-- With RivetsJS CDNJS -->
+<!-- With Rivets.js CDNJS -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
 
-<!-- With RivetsJS included -->
+<!-- With Rivets.js included -->
 <script type="text/javascript" src="/arquivos/vtex-minicart.rivets.min.js"></script>
 ```
 
@@ -75,6 +71,8 @@ Useful for displaying a loading animation while an Ajax request is waiting to co
 
 ## Data API
 
+These data-atribute can de set in any place.
+
 ### data-minicart-amount
 
 ```html
@@ -82,23 +80,6 @@ Useful for displaying a loading animation while an Ajax request is waiting to co
 ```
 
 Sum of all items on minicart.
-
-### data-minicart-item-qty
-
-```html
-<a href="#" class="minicart__item-qty-btn has--minus" data-minicart-item-qty="-">-</a>
-<a href="#" class="minicart__item-qty-btn has--plus" data-minicart-item-qty="+">+</a>
-```
-
-Increase or Decrease item quantity.
-
-### data-minicart-item-remove
-
-```html
-<button class="minicart__item-remove" role="remove" data-minicart-item-remove="" rv-data-minicart-index="item.index">X</button
-```
-
-Remove item from minicart.
 
 ### data-minicart-subtotal
 
@@ -128,10 +109,8 @@ $(function() {
 
     vtexjs.checkout.addToCart(item, null, 1)
       .done(function(orderForm) {
-        // Actualize minicart
-        $('#myMinicart').vtexMinicart('fillCart');
-        // Open minicart
-        $('#myMinicart').addClass('is--active');
+        $('#myMinicart').vtexMinicart('fillCart'); // Re-renderize minicart
+        $('#myMinicart').addClass('is--active'); // Open minicart
       })
       .fail(function(err) {
         window.console.log(err)
@@ -152,7 +131,7 @@ Triggered when item are updated.
 ```js
 $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
   window.console.group('Cart Updated');
-  window.console.log(orderForm); // Actual orderForm {object}
+  window.console.log(orderForm); // OrderForm updated {object}
   window.console.log(itemIndex); // Item index changed {int}
   window.console.log(item);      // Item changed {object}
   window.console.groupEnd();
@@ -214,7 +193,7 @@ $(function() {
 
 ### Cart conditional
 
-With Rivets.js, you can show content based on item on cart with directive `rv-show` with conditional filter `gt` (greater than) or `lt` (less than).
+With Rivets.js, you can show content based on cart's item with directive `rv-show` or `rv-if` with conditional filters `gt` (greater than) or `lt` (less than).
 
 ```html
 <!-- This element will show only if have items on cart -->
@@ -230,7 +209,7 @@ With Rivets.js, you can show content based on item on cart with directive `rv-sh
 
 ### Cart loop
 
-Renders your items on a cart with `rv-each-{varName}`.
+Renders your items on a cart with `rv-each-{objName}`.
 
 ```html
 <!-- While have items on 'cart.items' object, this loop will be rendering -->
@@ -239,26 +218,27 @@ Renders your items on a cart with `rv-each-{varName}`.
 
 ### Cart properties
 
-`{varName}` is your object with all cart properties. With example above, each cart item is on `item` object.
+`{objName}` is your object with all cart properties. With example above, each cart item is on `item` object.
 
-You can check all properties setting up **debug option** to `true`.
+You can see all properties changing **debug option** to `true` and check your console.
 
 ```html
 <div class="minicart__item-name">
   <h4 class="minicart__item-title" rv-text="item.productInfo.name"></h4>
+  <small class="minicart__item-sku-title" rv-text="item.name"></small>
 </div>
 ```
 
 ### Cart filters
 
-There are two Vtex Custom Filters you can use to format prices and images:
+There are two Vtex Custom Filters you can use to format images and prices:
 
 - productImgSize: following by `width` and `height` values
-- formatPrice: formats int value price provided by Vtex API
+- formatPrice: formats `int` value price provided by Vtex API
 
 ```html
 <div class="minicart__item-img-wrapper">
-  <!-- Rendering product image with 110x100 size -->
+  <!-- Rendering product image with 110x110 size -->
   <img class="minicart__item-img" rv-src="item.imageUrl | productImgSize 110 110" rv-alt="item.name" rv-title="item.name"/>
 </div>
 
@@ -275,7 +255,7 @@ There are two Vtex Custom Filters you can use to format prices and images:
 **Show product selected variants**
 ```html
 <p class="minicart__item-variant" rv-if="item.variants | isNotEmpty">
-  <span rv-text="item.variants.Cor"></span> | <span rv-text="item.variants.Tamanho"></span>
+  <span rv-text="item.variants.Cor"></span> - <span rv-text="item.variants.Tamanho"></span>
 </p>
 ```
 
@@ -284,6 +264,11 @@ There are two Vtex Custom Filters you can use to format prices and images:
 <div class="minicart__item-installments-wrapper" rv-if="item.installments | gt 1">
   ou <span rv-text="item.installments"></span>X de <span rv-text="item.installmentsValue | formatPrice"></span>
 </div>
+```
+
+**Remove item**
+```html
+<button class="minicart__item-remove" role="remove" data-minicart-item-remove="" rv-data-minicart-index="item.index">X</button
 ```
 
 **Set item quantity**

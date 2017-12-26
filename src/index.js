@@ -209,8 +209,10 @@ import './rivets-formatters.js';
             throw new Error('Option debug should be a "boolean" value');
         }
 
-        if ( ! (typeof option.bodyClass === 'string') ) {
-            throw new Error('Option bodyClass should be a "string" value.');
+        if ( option.bodyClass !== null ) {
+            if ( ! (typeof option.bodyClass === 'string') ) {
+                throw new Error('Option bodyClass should be a "string" value.');
+            }
         }
 
         return this.each((ev) => {

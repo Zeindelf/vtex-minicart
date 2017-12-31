@@ -14,18 +14,23 @@ dist/
 
 ### Install
 
+You will need [Rivets.js](http://rivetsjs.com/) and [VtexHelpers](https://github.com/zeindelf/vtex-helpers)
+
 ```shell
-npm install vtex-minicart --save
+npm install vtex-helpers vtex-minicart --save
 ```
 
 Include files:
 
 ```html
-<!-- With Rivets.js CDNJS -->
+<!-- With Rivets.js CDNJS (recommended) -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
 
-<!-- With Rivets.js included -->
+<!-- With Rivets.js file -->
+<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
+<script type="text/javascript" src="/arquivos/rivets.bundled.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.rivets.min.js"></script>
 ```
 
@@ -299,3 +304,5 @@ VtexMinicart.js is open-sourced software licensed under the [MIT license](https:
 jQuery 1.8.3+
 
 Rivets.js 0.9.6+
+
+VtexHelpers

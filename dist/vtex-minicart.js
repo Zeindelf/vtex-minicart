@@ -1,7 +1,3 @@
-// VtexMinicart.js
-// version: 0.2.0
-// author: Wellington Barreto
-// license: MIT
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -11,29 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
     stripHttp: function stripHttp(url) {
         return url.replace(/^https?:/, '');
-    },
-    formatPrice: function formatPrice(number, thousands, decimals, length, currency) {
-        currency = typeof currency == 'string' ? currency : 'R$ ';
-        length = typeof length !== 'number' ? 2 : length;
-
-        var re = '\\d(?=(\\d{' + 3 + '})+' + (length > 0 ? '\\D' : '$') + ')';
-        number = number / 100;
-        number = (number * 1).toFixed(Math.max(0, ~~length));
-
-        return currency + number.replace('.', decimals || ',').replace(new RegExp(re, 'g'), '$&' + (thousands || '.'));
-    },
-    getResizedImage: function getResizedImage(src, width, height) {
-        src = this.stripHttp(src);
-
-        if (width === undefined || height === undefined || typeof src != 'string') {
-            return src;
-        }
-
-        src = src.replace(/(?:ids\/[0-9]+)-([0-9]+)-([0-9]+)\//, function (match, matchedWidth, matchedHeight) {
-            return match.replace('-' + matchedWidth + '-' + matchedHeight, '-' + width + '-' + height);
-        });
-
-        return src.replace(/(ids\/[0-9]+)\//, '$1-' + width + '-' + height + '/');
     }
 };
 
@@ -46,8 +19,6 @@ var _helpers = require('./helpers.js');
 
 var _helpers2 = _interopRequireDefault(_helpers);
 
-require('./rivets-formatters.js');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (function ($) {
@@ -58,6 +29,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             debug: false,
             bodyClass: null
         };
+
+        if ('VtexHelpers' in window) {
+            this.vtexHelpers = new VtexHelpers();
+        }
+
+        if (!(this.vtexHelpers instanceof VtexHelpers)) {
+            throw new Error('VtexHelpers is required. Download it from https://www.npmjs.com/package/vtex-helpers');
+        }
 
         this.option = $.extend({}, defaults, option);
         this.$element = $(element);
@@ -88,7 +67,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             this._requestStartEvent();
 
             vtexjs.checkout.getOrderForm().done(function (orderForm) {
-                _this.$element.find('[data-minicart-subtotal]').html('R$ ' + _helpers2.default.formatPrice(orderForm.value));
+                _this.$element.find('[data-minicart-subtotal]').html(_this.vtexHelpers.formatPrice(orderForm.value));
                 _this.cart.itemCount = orderForm.items.length;
                 _this.cart.items = orderForm.items;
 
@@ -107,6 +86,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
                             if (item.sellingPrice === item.listPrice) {
                                 _this.cart.items[index].listPrice = 0;
                             }
+
+                            _this.cart.items[index].imageUrl = _helpers2.default.stripHttp(_this.cart.items[index].imageUrl);
 
                             // Custom product properties
                             _this.cart.items[index].productInfo = product;
@@ -289,218 +270,5 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         });
     };
 })(jQuery);
-
-},{"./helpers.js":1,"./rivets-formatters.js":3}],3:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _helpers = require('./helpers.js');
-
-var _helpers2 = _interopRequireDefault(_helpers);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-rivets.formatters['!'] = function (value) {
-  return !value;
-};
-
-rivets.formatters.eq = function (value, args) {
-  return value === args;
-};
-
-rivets.formatters.neq = function (value, args) {
-  return value !== args;
-};
-
-rivets.formatters.gt = function (value, args) {
-  return value > args;
-};
-
-rivets.formatters.gte = function (value, args) {
-  return value >= args;
-};
-
-rivets.formatters.lt = function (value, args) {
-  return value < args;
-};
-
-rivets.formatters.lte = function (value, args) {
-  return value <= args;
-};
-
-rivets.formatters.or = function (value, args) {
-  return value || args;
-};
-
-rivets.formatters.isEmpty = function (value) {
-  return typeof value === 'undefined' || value === null || typeof value === 'string' && value.length === 0;
-};
-
-rivets.formatters.isNotEmpty = function (value) {
-  return !rivets.formatters.isEmpty(value);
-};
-
-rivets.formatters.pass = function (value, args) {
-  return args;
-};
-
-rivets.formatters.json = function (value, intendation) {
-  return JSON.stringify(value, null, intendation || 0);
-};
-
-rivets.formatters.prefix = function (value, prefix) {
-  return '' + prefix + value;
-};
-
-rivets.formatters.suffix = function (value, suffix) {
-  return '' + value + suffix;
-};
-
-rivets.formatters.ucFirst = function (value) {
-  return value.substr(0, 1).toUpperCase() + value.substr(1);
-};
-
-rivets.formatters['+'] = function (value, args) {
-  return value + args;
-};
-
-rivets.formatters['-'] = function (value, args) {
-  return value - args;
-};
-
-rivets.formatters['*'] = function (value, args) {
-  return value * args;
-};
-
-rivets.formatters['/'] = function (value, args) {
-  return value / args;
-};
-
-rivets.formatters.round = function (value, decimals) {
-  if (decimals) {
-    var exp = Math.pow(10, decimals);
-    value = Math.round(value * exp) / exp;
-  } else {
-    value = Math.round(value);
-  }
-
-  return value;
-};
-
-rivets.formatters.get = function (obj, key) {
-  if (obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
-    return obj[key];
-  }
-  return null;
-};
-
-rivets.formatters.set = function (obj, key, value) {
-  if (obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
-    obj[key] = value;
-  }
-
-  return obj;
-};
-
-rivets.formatters['.'] = rivets.formatters.get;
-
-rivets.formatters.keys = function (obj) {
-  if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
-    return Object.keys(obj);
-  }
-
-  return [];
-};
-
-rivets.formatters.length = function (value) {
-  return value ? value.length || 0 : 0;
-};
-
-rivets.formatters.sort = function () /*value[, by][, direction]*/{
-  return value;
-
-  var args = Array.from(arguments);
-  var value = args.shift();
-  var by = args.shift();
-  var direction = args.shift();
-
-  if (!direction && (by == 'asc' || by == 'desc')) {
-    direction = by;
-    by = null;
-  }
-
-  if (!by) {
-    value.sort();
-  } else {
-    value.sort(function (a, b) {
-      if (a[by] === b[by]) return 0;
-
-      return a[by] < b[by] ? -1 : 1;
-    });
-  }
-
-  if (direction == 'desc') {
-    value.reverse();
-  }
-
-  return value;
-};
-
-rivets.formatters.default = function (value, args) {
-  return typeof value !== 'undefined' && value !== null ? value : args;
-};
-
-rivets.formatters.contains = function (value, search) {
-  if (Array.isArray(value)) {
-    return value.indexOf(search) !== -1;
-  }
-
-  return false;
-};
-
-rivets.formatters.percent = function (value, decimals) {
-  return number_format(value * 100, decimals || 0, ',') + '%';
-};
-
-rivets.formatters.bind = function () /*fn, thisArg[, arg1, arg2, ..., argN]*/{
-  var args = Array.from(arguments);
-  var fn = args.shift();
-  var self = args.shift();
-
-  if (typeof fn === 'function') {
-    return function () {
-      fn.apply(self, args);
-    };
-  }
-
-  return fn;
-};
-
-rivets.formatters.with = function () /*fn, arg1, arg2, ..., argN*/{
-  var args = Array.from(arguments);
-  console.log(args);
-  var fn = args.shift();
-
-  if (typeof fn === 'function') {
-    return fn.bind(null, args);
-  }
-
-  return fn;
-};
-
-rivets.formatters.slice = function () {
-  var args = Array.from(arguments);
-  var arr = args.shift();
-  return Array.prototype.slice.apply(arr, args);
-};
-
-rivets.formatters.formatPrice = function (val) {
-  return _helpers2.default.formatPrice(val);
-};
-
-rivets.formatters.productImgSize = function (val, arg1, arg2) {
-  return _helpers2.default.getResizedImage(val, arg1, arg2);
-};
 
 },{"./helpers.js":1}]},{},[2]);

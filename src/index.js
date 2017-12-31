@@ -1,6 +1,5 @@
 
 import Helpers from './helpers.js';
-import './rivets-formatters.js';
 
 (($) => {
     'use strict';
@@ -10,6 +9,14 @@ import './rivets-formatters.js';
             debug: false,
             bodyClass: null,
         };
+
+        if ( 'VtexHelpers' in window ) {
+            this.vtexHelpers = new VtexHelpers();
+        }
+
+        if ( ! (this.vtexHelpers instanceof VtexHelpers) ) {
+            throw new Error('VtexHelpers is required. Download it from https://www.npmjs.com/package/vtex-helpers');
+        }
 
         this.option = $.extend({}, defaults, option);
         this.$element = $(element);
@@ -40,7 +47,7 @@ import './rivets-formatters.js';
             this._requestStartEvent();
 
             vtexjs.checkout.getOrderForm().done((orderForm) => {
-                this.$element.find('[data-minicart-subtotal]').html(`R$ ${Helpers.formatPrice(orderForm.value)}`);
+                this.$element.find('[data-minicart-subtotal]').html(this.vtexHelpers.formatPrice(orderForm.value));
                 this.cart.itemCount = orderForm.items.length;
                 this.cart.items = orderForm.items;
 
@@ -55,6 +62,8 @@ import './rivets-formatters.js';
                             if ( item.sellingPrice === item.listPrice ) {
                                 this.cart.items[index].listPrice = 0;
                             }
+
+                            this.cart.items[index].imageUrl = Helpers.stripHttp(this.cart.items[index].imageUrl);
 
                             // Custom product properties
                             this.cart.items[index].productInfo = product;

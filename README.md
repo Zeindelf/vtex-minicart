@@ -29,8 +29,8 @@ Include files:
 <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
 
 <!-- With Rivets.js file -->
-<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
 <script type="text/javascript" src="/arquivos/rivets.bundled.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.rivets.min.js"></script>
 ```
 

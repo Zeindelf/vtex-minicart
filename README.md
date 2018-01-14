@@ -144,7 +144,7 @@ $(function() {
     var item = [{
       id: $(this).data('productId'),
       quantity: 1,
-      seller: '1'
+      seller: '1',
     }];
 
     vtexjs.checkout.addToCart(item, null, 1)
@@ -153,7 +153,7 @@ $(function() {
         $('#myMinicart').addClass('is--active'); // Open minicart
       })
       .fail(function(err) {
-        window.console.log(err)
+        window.console.log(err);
       });
   });
 });
@@ -341,4 +341,4 @@ jQuery 1.8.3+
 
 Rivets.js 0.9.6+
 
-VtexHelpers
+VtexUtils.js

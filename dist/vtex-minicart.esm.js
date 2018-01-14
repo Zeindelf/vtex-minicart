@@ -9,9 +9,6 @@
  * Date: 2018-01-08T23:57:39.618Z
  */
 
-(function () {
-'use strict';
-
 var CONSTANTS = {
     messages: {
         vtexUtils: 'VtexUtils.js is required and must be an instance. Download it from https://www.npmjs.com/package/vtex-utils and use option "vtexUtils: new VTEX.VtexUtils()".',
@@ -431,5 +428,3 @@ $.fn.vtexMinicart = function (option) {
         }
     });
 };
-
-}());

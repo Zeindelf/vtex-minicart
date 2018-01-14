@@ -9,7 +9,6 @@
  * Date: 2018-01-08T23:57:39.618Z
  */
 
-(function () {
 'use strict';
 
 var CONSTANTS = {
@@ -431,5 +430,3 @@ $.fn.vtexMinicart = function (option) {
         }
     });
 };
-
-}());

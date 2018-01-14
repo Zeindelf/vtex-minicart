@@ -1,38 +1,59 @@
 # VtexMinicart.js
+
 DOM Binding minicart for Vtex stores.
+
+## Table of contents
+
+- [Main](#main)
+- [Getting started](#getting-started)
+- [Options](#options)
+- [Data API](#data-api)
+- [Methods](#methods)
+- [Events](#events)
+- [DOM Binding](#dom-binding)
+- [License](#license)
+- [Dependencies](#dependencies)
 
 ## Main
 
 ```text
 dist/
-├── vtex-minicart.js              (uncompressed)
-├── vtex-minicart.min.js          (compressed)
-└── vtex-minicart.rivets.min.js   (compressed with Rivets.js)
+├── vtex-minicart.js         (uncompressed)
+└── vtex-minicart.min.js     (compressed)
 ```
 
 ## Getting started
 
+### Direct download
+
+Download the script [here](https://github.com/Zeindelf/vtex-minicart/blob/master/dist/vtex-minicart.min.js) and include it.
+
 ### Install
 
-You will need [Rivets.js](http://rivetsjs.com/) and [VtexHelpers](https://github.com/zeindelf/vtex-helpers)
-
-```shell
-npm install vtex-helpers vtex-minicart --save
-```
+You will need [Rivets.js](http://rivetsjs.com/) and [VtexUtils](https://github.com/zeindelf/vtex-utils)
 
 Include files:
 
 ```html
 <!-- With Rivets.js CDNJS (recommended) -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
-<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-utils.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
 
 <!-- With Rivets.js file -->
 <script type="text/javascript" src="/arquivos/rivets.bundled.min.js"></script>
-<script type="text/javascript" src="/arquivos/vtex-helpers.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-utils.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.rivets.min.js"></script>
 ```
+
+### Package Managers
+
+VtexMinicart.js supports [npm](https://www.npmjs.com/package/vtex-minicart) under the name `vtex-minicart`.
+
+```shell
+npm install vtex-minicart --save
+```
+
 
 ### Usage
 
@@ -43,6 +64,20 @@ $('#myMinicart').vtexMinicart(options);
 All elements inside `#myMinicart` are able to listen all DOM changes.
 
 ## Options
+
+### vtexUtils
+
+- Type: `Constructor`
+- Default: `null`
+- Required
+
+You will need pass `VtexUtils` as a constructor:
+
+```js
+$('#myMinicart').vtexMinicart({
+  vtexUtils: new VTEX.VtexUtils,
+});
+```
 
 ### debug
 
@@ -76,12 +111,12 @@ Useful for displaying a loading animation while an Ajax request is waiting to co
 
 ## Data API
 
-These data-atribute can de set in any place.
+These data-atribute can be set in any place.
 
 ### data-minicart-amount
 
 ```html
-<span class="minicart__amount" data-minicart-amount="0"></span>
+<span class="minicart__amount" data-minicart-amount=""></span>
 ```
 
 Sum of all items on minicart.
@@ -189,8 +224,9 @@ Init markup
 <script type="text/javascript">
 $(function() {
   $('#myMinicart').vtexMinicart({
+    vtexUtils: new VTEX.VtexUtils,
     debug: true,
-    bodyClass: 'has--loader',
+    bodyClass: 'has--minicart-loader',
   });
 });
 </script>

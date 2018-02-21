@@ -14,6 +14,7 @@ DOM Binding minicart for Vtex stores.
 - [License](#license)
 - [Dependencies](#dependencies)
 
+
 ## Main
 
 ```text

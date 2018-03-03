@@ -6,7 +6,7 @@
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-01-14T02:16:55.402Z
+ * Date: 2018-03-03T22:51:13.881Z
  */
 
 (function () {
@@ -347,60 +347,60 @@ var Methods = {
 };
 
 var VtexMinicart = function VtexMinicart(element, option) {
-    classCallCheck(this, VtexMinicart);
+        classCallCheck(this, VtexMinicart);
 
-    /**
-     * Plugin options
-     * @type {object}
-     */
-    this.option = $.extend({}, DEFAULTS, option);
+        /**
+         * Plugin options
+         * @type {object}
+         */
+        this.option = $.extend({}, DEFAULTS, option);
 
-    // Validate Vtex Utils
-    if (this.option.vtexUtils === null) {
-        throw new Error(CONSTANTS.messages.vtexUtils);
-    }
-
-    if (this.option.vtexUtils.name !== '@VtexUtils') {
-        throw new Error(CONSTANTS.messages.vtexUtils);
-    }
-
-    if (!(typeof this.option.debug === 'boolean')) {
-        throw new Error(CONSTANTS.messages.debug);
-    }
-
-    if (this.option.bodyClass !== null) {
-        if (!(typeof this.option.bodyClass === 'string')) {
-            throw new Error(CONSTANTS.messages.bodyClass);
+        // Validate Vtex Utils
+        if (this.option.vtexUtils === null) {
+                throw new Error(CONSTANTS.messages.vtexUtils);
         }
-    }
 
-    /**
-     * Global Helpers instance
-     * @type {GlobalHelpers}
-     */
-    this.globalHelpers = this.option.vtexUtils.globalHelpers;
+        if (this.option.vtexUtils.name !== '@VtexUtils') {
+                throw new Error(CONSTANTS.messages.vtexUtils);
+        }
 
-    /**
-     * Vtex Helpers instance
-     * @type {VtexHelpers}
-     */
-    this.vtexHelpers = this.option.vtexUtils.vtexHelpers;
+        if (!(typeof this.option.debug === 'boolean')) {
+                throw new Error(CONSTANTS.messages.debug);
+        }
 
-    /**
-     * Element
-     * @type {DOMElement}
-     */
-    this.$element = $(element);
+        if (this.option.bodyClass !== null) {
+                if (!(typeof this.option.bodyClass === 'string')) {
+                        throw new Error(CONSTANTS.messages.bodyClass);
+                }
+        }
 
-    /**
-     * Extend public methods
-     */
-    this.globalHelpers.extend(VtexMinicart.prototype, Methods);
+        /**
+         * Global Helpers instance
+         * @type {GlobalHelpers}
+         */
+        this.globalHelpers = this.option.vtexUtils.globalHelpers;
 
-    /**
-     * Initialize
-     */
-    this.init();
+        /**
+         * Vtex Helpers instance
+         * @type {VtexHelpers}
+         */
+        this.vtexHelpers = this.option.vtexUtils.vtexHelpers;
+
+        /**
+         * Element
+         * @type {DOMElement}
+         */
+        this.$element = $(element);
+
+        /**
+         * Extend public methods
+         */
+        this.globalHelpers.extend(VtexMinicart.prototype, Methods);
+
+        /**
+         * Initialize
+         */
+        this.init();
 };
 
 $.fn.vtexMinicart = function (option) {

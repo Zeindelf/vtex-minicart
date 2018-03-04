@@ -37,8 +37,6 @@ export default {
                 const sumQuantity = orderForm.items.reduce((acc, obj) => acc + obj.quantity, 0);
                 $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
-                // const def = $.Deferred();
-
                 for ( let index = 0, len = orderForm.items.length; index < len; index += 1 ) {
                     const _item = orderForm.items[index];
 

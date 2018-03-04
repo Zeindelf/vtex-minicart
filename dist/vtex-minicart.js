@@ -1,12 +1,12 @@
 
 /*!!
- * VtexMinicart.js v0.3.0
+ * VtexMinicart.js v0.4.0
  * https://github.com/zeindelf/vtex-minicart
  *
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-03-04T03:12:06.770Z
+ * Date: 2018-03-04T04:34:04.662Z
  */
 
 (function () {
@@ -289,8 +289,6 @@ var Methods = {
                 }, 0);
                 $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
-                // const def = $.Deferred();
-
                 var _loop = function _loop(index, len) {
                     var _item = orderForm.items[index];
 
@@ -431,7 +429,9 @@ var VtexMinicart = function VtexMinicart(element, option) {
      * Vtex Catalog instance
      * @type {VtexCatalog}
      */
+    /* eslint-disable */
     this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
+    /* eslint-enable */
 
     /**
      * Element

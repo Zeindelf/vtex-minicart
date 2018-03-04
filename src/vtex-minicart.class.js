@@ -57,7 +57,9 @@ class VtexMinicart {
          * Vtex Catalog instance
          * @type {VtexCatalog}
          */
+        /* eslint-disable */
         this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
+        /* eslint-enable */
 
 
         /**

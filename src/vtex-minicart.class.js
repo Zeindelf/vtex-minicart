@@ -20,10 +20,21 @@ class VtexMinicart {
             throw new Error(CONSTANTS.messages.vtexUtils);
         }
 
+        if ( this.option.vtexUtils.version < CONSTANTS.messages.vtexUtilsVersion ) {
+            throw new Error(CONSTANTS.messages.vtexUtilsVersionMessage);
+        }
+
+        // Validate Debug option
         if ( ! (typeof this.option.debug === 'boolean') ) {
             throw new Error(CONSTANTS.messages.debug);
         }
 
+        // Validate Cache option
+        if ( ! (typeof this.option.cache === 'boolean') ) {
+            throw new Error(CONSTANTS.messages.cache);
+        }
+
+        // Validate Body Class option
         if ( this.option.bodyClass !== null ) {
             if ( ! (typeof this.option.bodyClass === 'string') ) {
                 throw new Error(CONSTANTS.messages.bodyClass);
@@ -41,6 +52,12 @@ class VtexMinicart {
          * @type {VtexHelpers}
          */
         this.vtexHelpers = this.option.vtexUtils.vtexHelpers;
+
+        /**
+         * Vtex Catalog instance
+         * @type {VtexCatalog}
+         */
+        this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
 
 
         /**

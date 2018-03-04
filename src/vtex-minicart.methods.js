@@ -35,32 +35,39 @@ export default {
 
             if ( this.cart.itemCount > 0 ) {
                 const sumQuantity = orderForm.items.reduce((acc, obj) => acc + obj.quantity, 0);
-                $('[data-minicart-amount]').text(sumQuantity);
+                $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
-                orderForm.items.map((item, index) => {
-                    vtexjs.catalog.getProductWithVariations(item.productId).done((product) => {
-                        const variantInfo = product.skus.filter((sku) => parseInt(sku.sku) === parseInt(item.id));
+                // const def = $.Deferred();
 
-                        if ( item.sellingPrice === item.listPrice ) {
-                            this.cart.items[index].listPrice = 0;
-                        }
+                for ( let index = 0, len = orderForm.items.length; index < len; index += 1 ) {
+                    const _item = orderForm.items[index];
 
-                        this.cart.items[index].imageUrl = this.globalHelpers.stripHttp(this.cart.items[index].imageUrl);
+                    if ( _item.sellingPrice === _item.listPrice ) {
+                        this.cart.items[index].listPrice = 0;
+                    }
 
-                        // Custom product properties
-                        this.cart.items[index].productInfo = product;
-                        this.cart.items[index].index = index;
-                        this.cart.items[index].availablequantity = variantInfo[0].availablequantity;
-                        this.cart.items[index].installments = variantInfo[0].installments;
-                        this.cart.items[index].installmentsInsterestRate = variantInfo[0].installmentsInsterestRate;
-                        this.cart.items[index].installmentsValue = variantInfo[0].installmentsValue;
-                        this.cart.items[index].variants = variantInfo[0].dimensions;
+                    this.cart.items[index].imageUrl = this.globalHelpers.stripHttp(this.cart.items[index].imageUrl);
+                    this.cart.items[index].index = index;
+
+                    // Items is on cache
+                    this.vtexCatalog.searchProduct(_item.productId).then((product) => {
+                        const productSkuSearch = product.items.filter((sku) => parseInt(sku.itemId, 10) === parseInt(_item.id, 10));
+
+                        this.cart.items[index].productFullInfo = product;
+                        this.cart.items[index].productSkuSearch = productSkuSearch[0];
                     });
-                });
+
+                    // Check API with prices
+                    vtexjs.catalog.getProductWithVariations(_item.productId).done((product) => {
+                        const productSkuVariations = product.skus.filter((sku) => parseInt(sku.sku, 10) === parseInt(_item.id, 10));
+
+                        this.cart.items[index].productSkuVariations = productSkuVariations[0];
+                    });
+                }
 
                 _private._debug();
             } else {
-                $('[data-minicart-amount]').text(0);
+                $('[data-minicart-amount]').text(_private._setPadding(0));
             }
         }).always((orderForm) => {
             _private._requestEndEvent(orderForm);

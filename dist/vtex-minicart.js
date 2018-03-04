@@ -6,24 +6,33 @@
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-03-03T22:51:13.881Z
+ * Date: 2018-03-04T03:12:06.770Z
  */
 
 (function () {
 'use strict';
 
+var vtexUtilsVersion = '1.1.0';
+
 var CONSTANTS = {
     messages: {
         vtexUtils: 'VtexUtils.js is required and must be an instance. Download it from https://www.npmjs.com/package/vtex-utils and use option "vtexUtils: new VTEX.VtexUtils()".',
+        vtexUtilsVersion: vtexUtilsVersion,
+        vtexUtilsVersionMessage: 'VtexUtils version must be higher than ' + vtexUtilsVersion + '. Download last version on https://www.npmjs.com/package/vtex-utils',
+        vtexCatalog: 'VtexCatalog.js is required. Download it from https://www.npmjs.com/package/vtex-catalog and use option "vtexCatalog: VTEX.VtexUtils" (not an instance).',
         debug: 'Option debug should be a "boolean" value.',
+        cache: 'Option cache should be a "boolean" value.',
         bodyClass: 'Option bodyClass should be a "string" value.'
     }
 };
 
 var DEFAULTS = {
     vtexUtils: null,
+    vtexCatalog: null,
+    cache: false,
     debug: false,
-    bodyClass: null
+    bodyClass: null,
+    zeroPadding: false
 };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -191,13 +200,21 @@ var Private = function () {
             }
         }
 
+        // Helpers
+
+    }, {
+        key: '_setPadding',
+        value: function _setPadding(qty) {
+            return this._self.option.zeroPadding ? this._self.globalHelpers.pad(qty) : qty;
+        }
+
         // Custom events
 
     }, {
         key: '_requestStartEvent',
         value: function _requestStartEvent() {
             /* eslint-disable */
-            var ev = $.Event('vtexMinicart.requestStart');
+            var ev = $.Event('requestStart.vtexMinicart');
             /* eslint-enable */
 
             $(document).trigger(ev);
@@ -206,7 +223,7 @@ var Private = function () {
         key: '_requestEndEvent',
         value: function _requestEndEvent(orderForm) {
             /* eslint-disable */
-            var ev = $.Event('vtexMinicart.requestEnd');
+            var ev = $.Event('requestEnd.vtexMinicart');
             /* eslint-enable */
 
             $(document).trigger(ev, [orderForm]);
@@ -215,7 +232,7 @@ var Private = function () {
         key: '_updateItemEvent',
         value: function _updateItemEvent(orderForm, index) {
             /* eslint-disable */
-            var ev = $.Event('vtexMinicart.update');
+            var ev = $.Event('update.vtexMinicart');
             /* eslint-enable */
             var item = orderForm.items[index];
 
@@ -225,7 +242,7 @@ var Private = function () {
         key: '_deleteItemEvent',
         value: function _deleteItemEvent(orderForm) {
             /* eslint-disable */
-            var ev = $.Event('vtexMinicart.delete');
+            var ev = $.Event('delete.vtexMinicart');
             /* eslint-enable */
 
             $(document).trigger(ev, [orderForm]);
@@ -270,34 +287,47 @@ var Methods = {
                 var sumQuantity = orderForm.items.reduce(function (acc, obj) {
                     return acc + obj.quantity;
                 }, 0);
-                $('[data-minicart-amount]').text(sumQuantity);
+                $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
-                orderForm.items.map(function (item, index) {
-                    vtexjs.catalog.getProductWithVariations(item.productId).done(function (product) {
-                        var variantInfo = product.skus.filter(function (sku) {
-                            return parseInt(sku.sku) === parseInt(item.id);
+                // const def = $.Deferred();
+
+                var _loop = function _loop(index, len) {
+                    var _item = orderForm.items[index];
+
+                    if (_item.sellingPrice === _item.listPrice) {
+                        _this.cart.items[index].listPrice = 0;
+                    }
+
+                    _this.cart.items[index].imageUrl = _this.globalHelpers.stripHttp(_this.cart.items[index].imageUrl);
+                    _this.cart.items[index].index = index;
+
+                    // Items is on cache
+                    _this.vtexCatalog.searchProduct(_item.productId).then(function (product) {
+                        var productSkuSearch = product.items.filter(function (sku) {
+                            return parseInt(sku.itemId, 10) === parseInt(_item.id, 10);
                         });
 
-                        if (item.sellingPrice === item.listPrice) {
-                            _this.cart.items[index].listPrice = 0;
-                        }
-
-                        _this.cart.items[index].imageUrl = _this.globalHelpers.stripHttp(_this.cart.items[index].imageUrl);
-
-                        // Custom product properties
-                        _this.cart.items[index].productInfo = product;
-                        _this.cart.items[index].index = index;
-                        _this.cart.items[index].availablequantity = variantInfo[0].availablequantity;
-                        _this.cart.items[index].installments = variantInfo[0].installments;
-                        _this.cart.items[index].installmentsInsterestRate = variantInfo[0].installmentsInsterestRate;
-                        _this.cart.items[index].installmentsValue = variantInfo[0].installmentsValue;
-                        _this.cart.items[index].variants = variantInfo[0].dimensions;
+                        _this.cart.items[index].productFullInfo = product;
+                        _this.cart.items[index].productSkuSearch = productSkuSearch[0];
                     });
-                });
+
+                    // Check API with prices
+                    vtexjs.catalog.getProductWithVariations(_item.productId).done(function (product) {
+                        var productSkuVariations = product.skus.filter(function (sku) {
+                            return parseInt(sku.sku, 10) === parseInt(_item.id, 10);
+                        });
+
+                        _this.cart.items[index].productSkuVariations = productSkuVariations[0];
+                    });
+                };
+
+                for (var index = 0, len = orderForm.items.length; index < len; index += 1) {
+                    _loop(index, len);
+                }
 
                 _private._debug();
             } else {
-                $('[data-minicart-amount]').text(0);
+                $('[data-minicart-amount]').text(_private._setPadding(0));
             }
         }).always(function (orderForm) {
             _private._requestEndEvent(orderForm);
@@ -347,60 +377,77 @@ var Methods = {
 };
 
 var VtexMinicart = function VtexMinicart(element, option) {
-        classCallCheck(this, VtexMinicart);
+    classCallCheck(this, VtexMinicart);
 
-        /**
-         * Plugin options
-         * @type {object}
-         */
-        this.option = $.extend({}, DEFAULTS, option);
+    /**
+     * Plugin options
+     * @type {object}
+     */
+    this.option = $.extend({}, DEFAULTS, option);
 
-        // Validate Vtex Utils
-        if (this.option.vtexUtils === null) {
-                throw new Error(CONSTANTS.messages.vtexUtils);
+    // Validate Vtex Utils
+    if (this.option.vtexUtils === null) {
+        throw new Error(CONSTANTS.messages.vtexUtils);
+    }
+
+    if (this.option.vtexUtils.name !== '@VtexUtils') {
+        throw new Error(CONSTANTS.messages.vtexUtils);
+    }
+
+    if (this.option.vtexUtils.version < CONSTANTS.messages.vtexUtilsVersion) {
+        throw new Error(CONSTANTS.messages.vtexUtilsVersionMessage);
+    }
+
+    // Validate Debug option
+    if (!(typeof this.option.debug === 'boolean')) {
+        throw new Error(CONSTANTS.messages.debug);
+    }
+
+    // Validate Cache option
+    if (!(typeof this.option.cache === 'boolean')) {
+        throw new Error(CONSTANTS.messages.cache);
+    }
+
+    // Validate Body Class option
+    if (this.option.bodyClass !== null) {
+        if (!(typeof this.option.bodyClass === 'string')) {
+            throw new Error(CONSTANTS.messages.bodyClass);
         }
+    }
 
-        if (this.option.vtexUtils.name !== '@VtexUtils') {
-                throw new Error(CONSTANTS.messages.vtexUtils);
-        }
+    /**
+     * Global Helpers instance
+     * @type {GlobalHelpers}
+     */
+    this.globalHelpers = this.option.vtexUtils.globalHelpers;
 
-        if (!(typeof this.option.debug === 'boolean')) {
-                throw new Error(CONSTANTS.messages.debug);
-        }
+    /**
+     * Vtex Helpers instance
+     * @type {VtexHelpers}
+     */
+    this.vtexHelpers = this.option.vtexUtils.vtexHelpers;
 
-        if (this.option.bodyClass !== null) {
-                if (!(typeof this.option.bodyClass === 'string')) {
-                        throw new Error(CONSTANTS.messages.bodyClass);
-                }
-        }
+    /**
+     * Vtex Catalog instance
+     * @type {VtexCatalog}
+     */
+    this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
 
-        /**
-         * Global Helpers instance
-         * @type {GlobalHelpers}
-         */
-        this.globalHelpers = this.option.vtexUtils.globalHelpers;
+    /**
+     * Element
+     * @type {DOMElement}
+     */
+    this.$element = $(element);
 
-        /**
-         * Vtex Helpers instance
-         * @type {VtexHelpers}
-         */
-        this.vtexHelpers = this.option.vtexUtils.vtexHelpers;
+    /**
+     * Extend public methods
+     */
+    this.globalHelpers.extend(VtexMinicart.prototype, Methods);
 
-        /**
-         * Element
-         * @type {DOMElement}
-         */
-        this.$element = $(element);
-
-        /**
-         * Extend public methods
-         */
-        this.globalHelpers.extend(VtexMinicart.prototype, Methods);
-
-        /**
-         * Initialize
-         */
-        this.init();
+    /**
+     * Initialize
+     */
+    this.init();
 };
 
 $.fn.vtexMinicart = function (option) {

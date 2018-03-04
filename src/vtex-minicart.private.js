@@ -57,10 +57,15 @@ class Private {
         }
     }
 
+    // Helpers
+    _setPadding(qty) {
+        return ( this._self.option.zeroPadding ) ? this._self.globalHelpers.pad(qty) : qty;
+    }
+
     // Custom events
     _requestStartEvent() {
         /* eslint-disable */
-        const ev = $.Event('vtexMinicart.requestStart');
+        const ev = $.Event('requestStart.vtexMinicart');
         /* eslint-enable */
 
         $(document).trigger(ev);
@@ -68,7 +73,7 @@ class Private {
 
     _requestEndEvent(orderForm) {
         /* eslint-disable */
-        const ev = $.Event('vtexMinicart.requestEnd');
+        const ev = $.Event('requestEnd.vtexMinicart');
         /* eslint-enable */
 
         $(document).trigger(ev, [orderForm]);
@@ -76,7 +81,7 @@ class Private {
 
     _updateItemEvent(orderForm, index) {
         /* eslint-disable */
-        const ev = $.Event('vtexMinicart.update');
+        const ev = $.Event('update.vtexMinicart');
         /* eslint-enable */
         const item = orderForm.items[index];
 
@@ -85,7 +90,7 @@ class Private {
 
     _deleteItemEvent(orderForm) {
         /* eslint-disable */
-        const ev = $.Event('vtexMinicart.delete');
+        const ev = $.Event('delete.vtexMinicart');
         /* eslint-enable */
 
         $(document).trigger(ev, [orderForm]);

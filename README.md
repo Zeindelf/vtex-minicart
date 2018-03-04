@@ -192,12 +192,12 @@ $(function() {
 
 Events are triggered on the document and prefixed with the vtexMinicart namespace.
 
-### vtexMinicart.update [orderForm, itemIndex, item]
+### update.vtexMinicart [orderForm, itemIndex, item]
 
 Triggered when item are updated.
 
 ```js
-$(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
+$(document).on('update.vtexMinicart', function(ev, orderForm, itemIndex, item) {
   window.console.group('Cart Updated');
   window.console.log(orderForm); // OrderForm updated {object}
   window.console.log(itemIndex); // Item index changed {int}
@@ -206,34 +206,34 @@ $(document).on('vtexMinicart.update', function(ev, orderForm, itemIndex, item) {
 });
 ```
 
-### vtexMinicart.delete [orderForm]
+### delete.vtexMinicart [orderForm]
 
 Triggered when item are deleted. Useful to do actions when minicart are cleared.
 
 ```js
-$(document).on('vtexMinicart.delete', function(ev, orderForm) {
+$(document).on('delete.vtexMinicart', function(ev, orderForm) {
   if ( orderForm.items.length < 1 ) {
     $('#myMinicart').removeClass('is--active');
   }
 });
 ```
 
-### vtexMinicart.requestStart
+### requestStart.vtexMinicart
 
 Triggered whenever VtexMinicart.js begins to process the request queue.
 
 ```js
-$(document).on('vtexMinicart.requestStart', function(ev) {
+$(document).on('requestStart.vtexMinicart', function(ev) {
   // Event handling here
 });
 ```
 
-### vtexMinicart.requestEnd [orderForm]
+### requestEnd.vtexMinicart [orderForm]
 
 Triggered whenever VtexMinicart.js completes processing the current request queue.
 
 ```js
-$(document).on('vtexMinicart.requestEnd', function(ev, orderForm) {
+$(document).on('requestEnd.vtexMinicart', function(ev, orderForm) {
   // Event handling here
 });
 ```

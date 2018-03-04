@@ -7,6 +7,7 @@ DOM Binding minicart for Vtex stores.
 - [Main](#main)
 - [Getting started](#getting-started)
 - [Options](#options)
+- [Cart Data](#cart-data)
 - [Data API](#data-api)
 - [Methods](#methods)
 - [Events](#events)
@@ -31,7 +32,9 @@ Download the script [here](https://github.com/Zeindelf/vtex-minicart/blob/master
 
 ### Install
 
-You will need [Rivets.js](http://rivetsjs.com/) and [VtexUtils](https://github.com/zeindelf/vtex-utils)
+You will need [Rivets.js](http://rivetsjs.com/), [VtexUtils](https://github.com/zeindelf/vtex-utils) and [VtexCatalog](https://github.com/zeindelf/vtex-catalog)
+
+For minimal dependencies, use `v0.3.0` instead.
 
 Include files:
 
@@ -39,11 +42,13 @@ Include files:
 <!-- With Rivets.js CDNJS (recommended) -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-utils.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-catalog.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.min.js"></script>
 
 <!-- With Rivets.js file -->
 <script type="text/javascript" src="/arquivos/rivets.bundled.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-utils.min.js"></script>
+<script type="text/javascript" src="/arquivos/vtex-catalog.min.js"></script>
 <script type="text/javascript" src="/arquivos/vtex-minicart.rivets.min.js"></script>
 ```
 
@@ -66,7 +71,7 @@ All elements inside `#myMinicart` are able to listen all DOM changes.
 
 ## Options
 
-### vtexUtils
+### vtexUtils (required)
 
 - Type: `Constructor`
 - Default: `null`
@@ -76,18 +81,32 @@ You will need pass `VtexUtils` as a constructor:
 
 ```js
 $('#myMinicart').vtexMinicart({
-  vtexUtils: new VTEX.VtexUtils,
+  vtexUtils: new VTEX.VtexUtils(),
 });
 ```
 
-### debug
+### vtexCatalog (required)
+
+- Type: `Class`
+- Default: `null`
+- Required
+
+You will need pass entire `VtexCatalog`
+
+```js
+$('#myMinicart').vtexMinicart({
+  vtexCatalog: VTEX.VtexCatalog,
+});
+```
+
+### debug (optional)
 
 - Type: `Boolean`
 - Default: `false`
 
 When `true`, you may access a object of every items on minicart with all options that you can use on Rivets template. There are merged all information of **Product API** and **SKU API**
 
-### bodyClass
+### bodyClass (optional)
 
 - Type: `String`
 - Default: `null`
@@ -103,12 +122,20 @@ Useful for displaying a loading animation while an Ajax request is waiting to co
     visibility: hidden;
   }
 
-  body.has--loader .is--loading {
+  body.has--minicart-loader .is--loading {
     opacity: 1;
     visibility: visible;
   }
 </style>
 ```
+
+## Cart Data
+
+You can access original data from Order Form Vtex API. With these data, there are 3 new objects:
+
+- productFullInfo (from `/api/catalog_system/pub/products/search` endpoint)
+- productSkuSearch (filtered SKU info from `/api/catalog_system/pub/products/search` endpoint)
+- productSkuVariations (filtered SKU info from `/api/catalog_system/pub/products/variations` endpoint)
 
 ## Data API
 
@@ -225,7 +252,8 @@ Init markup
 <script type="text/javascript">
 $(function() {
   $('#myMinicart').vtexMinicart({
-    vtexUtils: new VTEX.VtexUtils,
+    vtexUtils: new VTEX.VtexUtils(),
+    vtexCatalog: VTEX.VtexCatalog,
     debug: true,
     bodyClass: 'has--minicart-loader',
   });
@@ -266,7 +294,7 @@ You can see all properties changing **debug option** to `true` and check your co
 
 ```html
 <div class="minicart__item-name">
-  <h4 class="minicart__item-title" rv-text="item.productInfo.name"></h4>
+  <h4 class="minicart__item-title" rv-text="item.productFullInfo.name"></h4>
   <small class="minicart__item-sku-title" rv-text="item.name"></small>
 </div>
 ```
@@ -343,3 +371,5 @@ jQuery 1.8.3+
 Rivets.js 0.9.6+
 
 VtexUtils.js
+
+VtexCatalog.js

@@ -1,5 +1,5 @@
 
-const vtexUtilsVersion = '1.1.0';
+const vtexUtilsVersion = '1.7.0';
 
 export default {
     messages: {

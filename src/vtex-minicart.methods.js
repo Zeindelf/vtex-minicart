@@ -59,7 +59,7 @@ export default {
                     vtexjs.catalog.getProductWithVariations(_item.productId).done((product) => {
                         const productSkuVariations = product.skus.filter((sku) => parseInt(sku.sku, 10) === parseInt(_item.id, 10));
 
-                        this.cart.items[index].productSkuVariations = productSkuVariations[0];
+                        this.cart.items[index].productSkuVariations = (this.option.camelizeItems) ? this.globalHelpers.camelize(productSkuVariations[0]) : productSkuVariations[0];
                     });
                 }
 

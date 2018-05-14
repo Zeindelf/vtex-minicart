@@ -6,4 +6,6 @@ export default {
     debug: false,
     bodyClass: null,
     zeroPadding: false,
+    camelizeItems: false,
+    camelizeProps: false,
 };

@@ -59,6 +59,7 @@ class VtexMinicart {
          */
         /* eslint-disable */
         this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
+        this.vtexCatalog.setCamelize(this.option.camelizeItems, this.option.camelizeProps);
         /* eslint-enable */
 
 

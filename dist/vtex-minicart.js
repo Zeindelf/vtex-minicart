@@ -6,7 +6,7 @@
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-03-04T04:34:04.662Z
+ * Date: 2018-05-14T04:18:34.347Z
  */
 
 (function () {
@@ -32,7 +32,9 @@ var DEFAULTS = {
     cache: false,
     debug: false,
     bodyClass: null,
-    zeroPadding: false
+    zeroPadding: false,
+    camelizeItems: false,
+    camelizeProps: false
 };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -315,7 +317,7 @@ var Methods = {
                             return parseInt(sku.sku, 10) === parseInt(_item.id, 10);
                         });
 
-                        _this.cart.items[index].productSkuVariations = productSkuVariations[0];
+                        _this.cart.items[index].productSkuVariations = _this.option.camelizeItems ? _this.globalHelpers.camelize(productSkuVariations[0]) : productSkuVariations[0];
                     });
                 };
 
@@ -431,6 +433,7 @@ var VtexMinicart = function VtexMinicart(element, option) {
      */
     /* eslint-disable */
     this.vtexCatalog = new this.option.vtexCatalog(this.option.vtexUtils, this.option.cache);
+    this.vtexCatalog.setCamelize(this.option.camelizeItems, this.option.camelizeProps);
     /* eslint-enable */
 
     /**

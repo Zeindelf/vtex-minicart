@@ -129,6 +129,14 @@ Useful for displaying a loading animation while an Ajax request is waiting to co
 </style>
 ```
 
+### showGifts (optional)
+
+- Type: `Boolean`
+- Default: `false`
+
+Show product gift on cart
+
+
 ## Cart Data
 
 You can access original data from Order Form Vtex API. With these data, there are 3 new objects:

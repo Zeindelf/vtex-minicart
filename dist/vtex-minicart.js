@@ -1,24 +1,20 @@
 
 /*!!
- * VtexMinicart.js v0.5.0
+ * VtexMinicart.js v0.5.1
  * https://github.com/zeindelf/vtex-minicart
  *
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-08-26T18:55:09.732Z
+ * Date: 2018-08-26T19:01:51.458Z
  */
 
 (function () {
 'use strict';
 
-var vtexUtilsVersion = '1.7.0';
-
 var CONSTANTS = {
     messages: {
         vtexUtils: 'VtexUtils.js is required and must be an instance. Download it from https://www.npmjs.com/package/vtex-utils and use option "vtexUtils: new VTEX.VtexUtils()".',
-        vtexUtilsVersion: vtexUtilsVersion,
-        vtexUtilsVersionMessage: 'VtexUtils version must be higher than ' + vtexUtilsVersion + '. Download last version on https://www.npmjs.com/package/vtex-utils',
         vtexCatalog: 'VtexCatalog.js is required. Download it from https://www.npmjs.com/package/vtex-catalog and use option "vtexCatalog: VTEX.VtexUtils" (not an instance).',
         debug: 'Option debug should be a "boolean" value.',
         cache: 'Option cache should be a "boolean" value.',
@@ -405,10 +401,6 @@ var VtexMinicart = function VtexMinicart(element, option) {
 
     if (this.option.vtexUtils.name !== '@VtexUtils') {
         throw new Error(CONSTANTS.messages.vtexUtils);
-    }
-
-    if (this.option.vtexUtils.version < CONSTANTS.messages.vtexUtilsVersion) {
-        throw new Error(CONSTANTS.messages.vtexUtilsVersionMessage);
     }
 
     // Validate Debug option

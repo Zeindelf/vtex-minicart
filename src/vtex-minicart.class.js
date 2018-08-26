@@ -20,23 +20,19 @@ class VtexMinicart {
             throw new Error(CONSTANTS.messages.vtexUtils);
         }
 
-        if ( this.option.vtexUtils.version < CONSTANTS.messages.vtexUtilsVersion ) {
-            throw new Error(CONSTANTS.messages.vtexUtilsVersionMessage);
-        }
-
         // Validate Debug option
-        if ( ! (typeof this.option.debug === 'boolean') ) {
+        if ( !(typeof this.option.debug === 'boolean') ) {
             throw new Error(CONSTANTS.messages.debug);
         }
 
         // Validate Cache option
-        if ( ! (typeof this.option.cache === 'boolean') ) {
+        if ( !(typeof this.option.cache === 'boolean') ) {
             throw new Error(CONSTANTS.messages.cache);
         }
 
         // Validate Body Class option
         if ( this.option.bodyClass !== null ) {
-            if ( ! (typeof this.option.bodyClass === 'string') ) {
+            if ( !(typeof this.option.bodyClass === 'string') ) {
                 throw new Error(CONSTANTS.messages.bodyClass);
             }
         }

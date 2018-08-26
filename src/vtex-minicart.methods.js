@@ -29,16 +29,22 @@ export default {
         _private._requestStartEvent();
 
         vtexjs.checkout.getOrderForm().done((orderForm) => {
+            let orderFormItems = orderForm.items;
+
+            if ( !this.option.showGifts ) {
+                orderFormItems = orderFormItems.filter((item) => !item.isGift);
+            }
+
             this.$element.find('[data-minicart-subtotal]').html(this.vtexHelpers.formatPrice(orderForm.value));
-            this.cart.itemCount = orderForm.items.length;
-            this.cart.items = orderForm.items;
+            this.cart.itemCount = orderFormItems.length;
+            this.cart.items = orderFormItems;
 
             if ( this.cart.itemCount > 0 ) {
-                const sumQuantity = orderForm.items.reduce((acc, obj) => acc + obj.quantity, 0);
+                const sumQuantity = orderFormItems.reduce((acc, obj) => acc + obj.quantity, 0);
                 $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
-                for ( let index = 0, len = orderForm.items.length; index < len; index += 1 ) {
-                    const _item = orderForm.items[index];
+                for ( let index = 0, len = orderFormItems.length; index < len; index += 1 ) {
+                    const _item = orderFormItems[index];
 
                     if ( _item.sellingPrice === _item.listPrice ) {
                         this.cart.items[index].listPrice = 0;
@@ -49,7 +55,11 @@ export default {
 
                     // Items is on cache
                     this.vtexCatalog.searchProduct(_item.productId).then((product) => {
-                        const productSkuSearch = product.items.filter((sku) => parseInt(sku.itemId, 10) === parseInt(_item.id, 10));
+                        let productSkuSearch;
+
+                        if ( product ) {
+                            productSkuSearch = product.items.filter((sku) => parseInt(sku.itemId, 10) === parseInt(_item.id, 10));
+                        }
 
                         this.cart.items[index].productFullInfo = product;
                         this.cart.items[index].productSkuSearch = productSkuSearch[0];

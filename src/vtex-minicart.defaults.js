@@ -6,6 +6,7 @@ export default {
     debug: false,
     bodyClass: null,
     zeroPadding: false,
+    showGifts: false,
     camelizeItems: false,
     camelizeProps: false,
 };

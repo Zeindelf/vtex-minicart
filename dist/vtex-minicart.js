@@ -6,7 +6,7 @@
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-05-14T04:50:59.050Z
+ * Date: 2018-08-26T18:55:09.732Z
  */
 
 (function () {
@@ -33,6 +33,7 @@ var DEFAULTS = {
     debug: false,
     bodyClass: null,
     zeroPadding: false,
+    showGifts: false,
     camelizeItems: false,
     camelizeProps: false
 };
@@ -281,18 +282,26 @@ var Methods = {
         _private._requestStartEvent();
 
         vtexjs.checkout.getOrderForm().done(function (orderForm) {
+            var orderFormItems = orderForm.items;
+
+            if (!_this.option.showGifts) {
+                orderFormItems = orderFormItems.filter(function (item) {
+                    return !item.isGift;
+                });
+            }
+
             _this.$element.find('[data-minicart-subtotal]').html(_this.vtexHelpers.formatPrice(orderForm.value));
-            _this.cart.itemCount = orderForm.items.length;
-            _this.cart.items = orderForm.items;
+            _this.cart.itemCount = orderFormItems.length;
+            _this.cart.items = orderFormItems;
 
             if (_this.cart.itemCount > 0) {
-                var sumQuantity = orderForm.items.reduce(function (acc, obj) {
+                var sumQuantity = orderFormItems.reduce(function (acc, obj) {
                     return acc + obj.quantity;
                 }, 0);
                 $('[data-minicart-amount]').text(_private._setPadding(sumQuantity));
 
                 var _loop = function _loop(index, len) {
-                    var _item = orderForm.items[index];
+                    var _item = orderFormItems[index];
 
                     if (_item.sellingPrice === _item.listPrice) {
                         _this.cart.items[index].listPrice = 0;
@@ -303,9 +312,13 @@ var Methods = {
 
                     // Items is on cache
                     _this.vtexCatalog.searchProduct(_item.productId).then(function (product) {
-                        var productSkuSearch = product.items.filter(function (sku) {
-                            return parseInt(sku.itemId, 10) === parseInt(_item.id, 10);
-                        });
+                        var productSkuSearch = void 0;
+
+                        if (product) {
+                            productSkuSearch = product.items.filter(function (sku) {
+                                return parseInt(sku.itemId, 10) === parseInt(_item.id, 10);
+                            });
+                        }
 
                         _this.cart.items[index].productFullInfo = product;
                         _this.cart.items[index].productSkuSearch = productSkuSearch[0];
@@ -321,7 +334,7 @@ var Methods = {
                     });
                 };
 
-                for (var index = 0, len = orderForm.items.length; index < len; index += 1) {
+                for (var index = 0, len = orderFormItems.length; index < len; index += 1) {
                     _loop(index, len);
                 }
 

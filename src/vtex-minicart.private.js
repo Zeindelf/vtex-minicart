@@ -13,6 +13,8 @@ class Private {
     }
 
     _removeItem(index) {
+        const product = vtexjs.checkout.orderForm.items[index];
+
         vtexjs.checkout.getOrderForm().then((orderForm) => {
             this._addLoader();
 
@@ -23,7 +25,7 @@ class Private {
         }).done((orderForm) => {
             this._self.fillCart();
             this._removeLoader();
-            this._deleteItemEvent(orderForm);
+            this._deleteItemEvent(orderForm, product);
         });
     }
 
@@ -88,12 +90,12 @@ class Private {
         $(document).trigger(ev, [orderForm, index, item]);
     }
 
-    _deleteItemEvent(orderForm) {
+    _deleteItemEvent(orderForm, product) {
         /* eslint-disable */
         const ev = $.Event('delete.vtexMinicart');
         /* eslint-enable */
 
-        $(document).trigger(ev, [orderForm]);
+        $(document).trigger(ev, [orderForm, product]);
     }
 }
 

@@ -6,7 +6,7 @@
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-08-26T19:01:51.458Z
+ * Date: 2018-12-14T20:59:05.966Z
  */
 
 (function () {
@@ -148,6 +148,8 @@ var Private = function () {
         value: function _removeItem(index) {
             var _this = this;
 
+            var product = vtexjs.checkout.orderForm.items[index];
+
             vtexjs.checkout.getOrderForm().then(function (orderForm) {
                 _this._addLoader();
 
@@ -158,7 +160,7 @@ var Private = function () {
             }).done(function (orderForm) {
                 _this._self.fillCart();
                 _this._removeLoader();
-                _this._deleteItemEvent(orderForm);
+                _this._deleteItemEvent(orderForm, product);
             });
         }
     }, {
@@ -239,12 +241,12 @@ var Private = function () {
         }
     }, {
         key: '_deleteItemEvent',
-        value: function _deleteItemEvent(orderForm) {
+        value: function _deleteItemEvent(orderForm, product) {
             /* eslint-disable */
             var ev = $.Event('delete.vtexMinicart');
             /* eslint-enable */
 
-            $(document).trigger(ev, [orderForm]);
+            $(document).trigger(ev, [orderForm, product]);
         }
     }]);
     return Private;

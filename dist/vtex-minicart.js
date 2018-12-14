@@ -1,12 +1,12 @@
 
 /*!!
- * VtexMinicart.js v0.5.1
+ * VtexMinicart.js v0.5.2
  * https://github.com/zeindelf/vtex-minicart
  *
  * Copyright (c) 2017-2018 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-12-14T20:59:05.966Z
+ * Date: 2018-12-14T21:18:54.726Z
  */
 
 (function () {

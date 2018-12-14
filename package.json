@@ -1,6 +1,6 @@
 {
   "name": "vtex-minicart",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Minicart for Vtex store with DOM Binding",
   "browser": "dist/vtex-minicart.js",
   "scripts": {

@@ -1,12 +1,12 @@
 
 /*!!
- * VtexMinicart.js v0.5.2
+ * VtexMinicart.js v0.5.3
  * https://github.com/zeindelf/vtex-minicart
  *
- * Copyright (c) 2017-2018 Zeindelf
+ * Copyright (c) 2017-2019 Zeindelf
  * Released under the MIT license
  *
- * Date: 2018-12-14T21:18:54.726Z
+ * Date: 2019-02-04T18:42:45.744Z
  */
 
 (function () {
@@ -288,7 +288,8 @@ var Methods = {
                 });
             }
 
-            _this.$element.find('[data-minicart-subtotal]').html(_this.vtexHelpers.formatPrice(orderForm.value));
+            var totalVal = _this.globalHelpers.objectSearch(orderForm.totalizers, { id: 'Items' });
+            _this.$element.find('[data-minicart-subtotal]').html(_this.vtexHelpers.formatPrice(totalVal.value || 0));
             _this.cart.itemCount = orderFormItems.length;
             _this.cart.items = orderFormItems;
 

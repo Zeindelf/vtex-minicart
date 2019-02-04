@@ -35,7 +35,8 @@ export default {
                 orderFormItems = orderFormItems.filter((item) => !item.isGift);
             }
 
-            this.$element.find('[data-minicart-subtotal]').html(this.vtexHelpers.formatPrice(orderForm.value));
+            const totalVal = this.globalHelpers.objectSearch(orderForm.totalizers, {id: 'Items'});
+            this.$element.find('[data-minicart-subtotal]').html(this.vtexHelpers.formatPrice(totalVal.value || 0));
             this.cart.itemCount = orderFormItems.length;
             this.cart.items = orderFormItems;
 

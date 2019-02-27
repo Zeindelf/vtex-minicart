@@ -55,14 +55,16 @@ export default {
                     this.cart.items[index].index = index;
 
                     // Items is on cache
-                    this.vtexCatalog.searchProduct(_item.productId).then((product) => {
-                        let productSkuSearch;
+                    $.ajax({
+                        url: '/api/catalog_system/pub/products/search?fq=productId:' + _item.productId,
+                    }).then((product) => {
+                        let productSkuSearch = [];
 
-                        if ( product ) {
-                            productSkuSearch = product.items.filter((sku) => parseInt(sku.itemId, 10) === parseInt(_item.id, 10));
+                        if ( product.length ) {
+                            productSkuSearch = product[0].items.filter((sku) => parseInt(sku.itemId, 10) === parseInt(_item.id, 10));
                         }
 
-                        this.cart.items[index].productFullInfo = product;
+                        this.cart.items[index].productFullInfo = product[0];
                         this.cart.items[index].productSkuSearch = productSkuSearch[0];
                     });
 

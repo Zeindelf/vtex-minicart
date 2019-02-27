@@ -6,7 +6,7 @@
  * Copyright (c) 2017-2019 Zeindelf
  * Released under the MIT license
  *
- * Date: 2019-02-04T18:42:45.744Z
+ * Date: 2019-02-27T03:46:50.907Z
  */
 
 (function () {
@@ -310,16 +310,18 @@ var Methods = {
                     _this.cart.items[index].index = index;
 
                     // Items is on cache
-                    _this.vtexCatalog.searchProduct(_item.productId).then(function (product) {
-                        var productSkuSearch = void 0;
+                    $.ajax({
+                        url: '/api/catalog_system/pub/products/search?fq=productId:' + _item.productId
+                    }).then(function (product) {
+                        var productSkuSearch = [];
 
-                        if (product) {
-                            productSkuSearch = product.items.filter(function (sku) {
+                        if (product.length) {
+                            productSkuSearch = product[0].items.filter(function (sku) {
                                 return parseInt(sku.itemId, 10) === parseInt(_item.id, 10);
                             });
                         }
 
-                        _this.cart.items[index].productFullInfo = product;
+                        _this.cart.items[index].productFullInfo = product[0];
                         _this.cart.items[index].productSkuSearch = productSkuSearch[0];
                     });
 
